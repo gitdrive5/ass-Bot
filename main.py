@@ -1,5 +1,6 @@
 import logging
 import telegram
+import os
 from telegram.ext import Updater, MessageHandler, Filters
 from asyncio import get_event_loop, set_event_loop, new_event_loop, sleep
 from base64 import b64decode
