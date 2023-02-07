@@ -1620,45 +1620,6 @@ async def worker(c: pbot, m: Message):
         loop.create_task(processor(c, m))
     return
 
-# Enable logging
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    level=logging.INFO)
-
-logger = logging.getLogger(__name__)
-
-# Your bot's token, obtained from BotFather
-BOT_TOKEN = os.environ.get("TOKEN", "")
-
-# Channel where logs will be sent
-LOG_CHANNEL = -1001836419410  # Replace with the id of the channel
-
-def send_to_log_channel(bot, update):
-    # Send the message text to the log channel
-    bot.send_message(chat_id=LOG_CHANNEL, text=update.message.text)
-
-def error(bot, update, error):
-    """Log errors caused by updates."""
-    logger.warning('Update "%s" caused error "%s"', update, error)
-
-def main():
-    # Create the Updater and pass it the bot's token
-    updater = Updater(BOT_TOKEN)
-
-    # Get the dispatcher to register handlers
-    dp = updater.dispatcher
-
-    # Add a handler to handle messages
-    dp.add_handler(MessageHandler(Filters.text, send_to_log_channel))
-
-    # Add an error handler
-    dp.add_error_handler(error)
-
-    # Start the bot
-    updater.start_polling()
-
-    # Run the bot until the user presses Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT
-    updater.idle()
 
 
 print("Started!")
