@@ -1,3 +1,6 @@
+import logging
+import telegram
+from telegram.ext import Updater, MessageHandler, Filters
 from asyncio import get_event_loop, set_event_loop, new_event_loop, sleep
 from base64 import b64decode
 from contextlib import suppress
@@ -18,11 +21,18 @@ from pyrogram.enums import MessageEntityType, ChatMemberStatus
 from pyrogram.errors import RPCError, FloodWait, UserNotParticipant
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
 
+TOKEN = os.environ.get("TOKEN", "")
+
+API_ID = int(os.environ.get("API_ID", ""))
+
+API_HASH = os.environ.get("API_HASH", "")
+
+
 pbot = Client(
     "bypasserbot",
-    api_id=,
-    api_hash="",
-    bot_token="",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=TOKEN,
 )
 drivebuzz_crypt = ""
 drivefire_crypt = ""
@@ -36,7 +46,7 @@ appdrive_password = ""
 hubdrive_crypt = ""
 sharerpw_xsrf_token = ""
 sharerpw_laravel_session = ""
-channel_id = -1001601615641
+channel_id = -1001890391404
 http = AsyncClient(http2=True, timeout=Timeout(10.0))
 try:
     loop = get_event_loop()
@@ -1610,6 +1620,46 @@ async def worker(c: pbot, m: Message):
     with suppress(RuntimeError):
         loop.create_task(processor(c, m))
     return
+
+# Enable logging
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+
+logger = logging.getLogger(__name__)
+
+# Your bot's token, obtained from BotFather
+BOT_TOKEN = os.environ.get("TOKEN", "")
+
+# Channel where logs will be sent
+LOG_CHANNEL = -1001890391404  # Replace with the id of the channel
+
+def send_to_log_channel(bot, update):
+    # Send the message text to the log channel
+    bot.send_message(chat_id=LOG_CHANNEL, text=update.message.text)
+
+def error(bot, update, error):
+    """Log errors caused by updates."""
+    logger.warning('Update "%s" caused error "%s"', update, error)
+
+def main():
+    # Create the Updater and pass it the bot's token
+    updater = Updater(BOT_TOKEN)
+
+    # Get the dispatcher to register handlers
+    dp = updater.dispatcher
+
+    # Add a handler to handle messages
+    dp.add_handler(MessageHandler(Filters.text, send_to_log_channel))
+
+    # Add an error handler
+    dp.add_error_handler(error)
+
+    # Start the bot
+    updater.start_polling()
+
+    # Run the bot until the user presses Ctrl-C or the process receives SIGINT,
+    # SIGTERM or SIGABRT
+    updater.idle()
 
 
 print("Started!")
