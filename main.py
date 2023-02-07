@@ -1631,7 +1631,7 @@ logger = logging.getLogger(__name__)
 BOT_TOKEN = os.environ.get("TOKEN", "")
 
 # Channel where logs will be sent
-LOG_CHANNEL = -1001890391404  # Replace with the id of the channel
+LOG_CHANNEL = -1001836419410  # Replace with the id of the channel
 
 def send_to_log_channel(bot, update):
     # Send the message text to the log channel
